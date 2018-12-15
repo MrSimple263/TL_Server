@@ -91,4 +91,40 @@ router.post('/bookmark/del',(req,res)=>{
         res.json(results);
       });
 })
+//get thong tin user theo id
+router.post('/user_id',(req,res)=>{
+    var userid=req.body.userid;
+    var query="call user_id(?)";
+    connection.query(query,
+        [userid],
+        function (error, results, fields) {
+        if (error) throw error;
+        console.log(results);
+        res.json(results);
+      });
+//       CREATE DEFINER=`root`@`localhost` PROCEDURE `user_id`(pid int)
+// BEGIN
+// select * 
+// from USER
+// where USER.id=pid;
+// END
+})
+//get cac bai post do user do viet
+router.post('/user_id_post',(req,res)=>{
+    var userid=req.body.userid;
+    var query="call user_id_post(?)";
+    connection.query(query,
+        [userid],
+        function (error, results, fields) {
+        if (error) throw error;
+        console.log(results);
+        res.json(results);
+      });
+    //   CREATE DEFINER=`root`@`localhost` PROCEDURE `user_id_post`(pid int)
+    //   BEGIN
+    //   select * 
+    //   from POST
+    //   where POST.user=pid;
+    //   END
+})
 module.exports=router;
