@@ -10,6 +10,24 @@ var connection = mysql.createConnection({
   password : '12345',
   database : 'mydb'
 });
+//load tat ca bai viet trong category
+router.post('/load_category',(req,res)=>{
+    var id=req.body.id;
+    var query='call post_of_category(?)';
+    connection.query(query,
+        [id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+      });
+//       CREATE DEFINER=`root`@`localhost` PROCEDURE `post_of_category`(pid int)
+// BEGIN
+// 	select POST.title,POST.des,USER.username,CATEGORY.name,POST.time,POST.img
+//     from POST inner join CATEGORY on POST.category=CATEGORY.id
+// 			inner join USER on USER.id=POST.user
+//     where CATEGORY.id=pid;
+// END
+})
 //load tat ca cac bai viet
 router.get('/load_all',(req,res)=>{
     var query='call load_all()';
