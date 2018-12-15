@@ -28,6 +28,25 @@ router.post('/upload',(req,res)=>{
         res.send("insert sucessful");
       });
 })
+//xem mot bai viet
+router.post('/load_post',(req,res)=>{
+    var id=req.body.id;
+    console.log(id);
+    var query='call load_post(?)';
+    connection.query(query,
+        [id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+      });
+      //storeproduce
+//       CREATE DEFINER=`root`@`localhost` PROCEDURE `load_post`(pid int)
+// BEGIN
+// 	select POST.id,POST.title,POST.des,POST.content,POST.time,POST.view,USER.name
+//     from POST inner join USER on POST.user=USER.id
+// 	where POST.id=pid;
+// END
+})
 //top 5 bai moi nhat
 router.get('/newest',(req,res)=>{
     var query='call new_top_5()';
