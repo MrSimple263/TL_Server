@@ -10,6 +10,16 @@ var connection = mysql.createConnection({
   password : '12345',
   database : 'mydb'
 });
+//load tat ca cac bai viet
+router.get('/load_all',(req,res)=>{
+    var query='call load_all()';
+    connection.query(query,
+        [],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+      });
+})
 //upload môt bai viet
 router.post('/upload',(req,res)=>{
     var title=req.body.title;
@@ -67,16 +77,7 @@ router.get('/viewest',(req,res)=>{
         res.json(results);
       });
 })
-//top 4 bai xem nhieu nhat
-router.get('/viewest',(req,res)=>{
-    var query='call view_top_4()';
-    connection.query(query,
-        [],
-        function (error, results, fields) {
-        if (error) throw error;
-        res.json(results);
-      });
-})
+
 //tang 1 luot xem cho bai viet
 router.post('/incview',(req,res)=>{
     var postid=req.body.postid;
