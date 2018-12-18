@@ -56,7 +56,7 @@ router.post('/upload',(req,res)=>{
         res.send("insert sucessful");
       });
 })
-//xem mot bai viet
+//xem mot bai viet -  store them truong img
 router.post('/load_post',(req,res)=>{
     var id=req.body.id;
     console.log(id);
@@ -107,5 +107,20 @@ router.post('/incview',(req,res)=>{
         res.json(results);
       });
 })
+//xoa 1 bai viet
+router.post('/delete',(req,res)=>{
+    var postid=req.body.postid;
+    var query='call delete_post(?);';
+    connection.query(query,
+        [postid],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+      });
+})
+// CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_post`(ppost int)
+// BEGIN
+// 	delete from POST where POST.id = ppost;
+// END
 
 module.exports=router;
