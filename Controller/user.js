@@ -63,30 +63,6 @@ router.post('/clap', (req, res) => {
             res.json(results);
         });
 })
-//bookmark cho mot bai viet
-router.post('/bookmark', (req, res) => {
-    var userid = req.body.userid;
-    var postid = req.body.postid;
-    var query = "call bookmark(?,?)";
-    connection.query(query,
-        [userid, postid],
-        function (error, results, fields) {
-            if (error) throw error;
-            res.json(results);
-        });
-})
-//xoa bookmark cho bai viet
-router.post('/bookmark/del', (req, res) => {
-    var userid = req.body.userid;
-    var postid = req.body.postid;
-    var query = "call bookmark_del(?,?)";
-    connection.query(query,
-        [userid, postid],
-        function (error, results, fields) {
-            if (error) throw error;
-            res.json(results);
-        });
-})
 //get thong tin user theo id
 router.post('/user_id', (req, res) => {
     var userid = req.body.userid;
@@ -131,14 +107,59 @@ router.post('/update', (req, res) => {
         [userid, name, avatar],
         function (error, results, fields) {
             if (error) throw error;
+            res.json(results);
+        });
+    // CREATE DEFINER=`root`@`localhost` PROCEDURE `user_update`(pid int, pname nvarchar(45),pavartar nvarchar(200))
+    // BEGIN
+    // update USER
+    // set USER.name = pname, USER.avartar = pavartar
+    // where id = pid;
+    // END
+})
+//bookmark
+router.post('/bookmark', (req, res) => {
+    var { userid, postid } = req.body;
+    var query = "select bookmark(?,?) as state";
+    connection.query(query,
+        [userid, postid],
+        function (error, results, fields) {
+            if(error) throw error;
+            res.json(results);
+        });
+})
+//delete bookmark
+router.post('/delete_bookmark', (req, res) => {
+    var { userid, postid } = req.body;
+    var query = "call delete_bookmark(?,?)";
+    connection.query(query,
+        [userid, postid],
+        function (error, results, fields) {
+            if (error) throw error;
             console.log(results);
             res.json(results);
         });
 })
-// CREATE DEFINER=`root`@`localhost` PROCEDURE `user_update`(pid int, pname nvarchar(45),pavartar nvarchar(200))
-// BEGIN
-// update USER
-// set USER.name = pname, USER.avartar = pavartar
-// where id = pid;
-// END
+//get bookmark by userid
+router.post('/user_bookmark', (req, res) => {
+    var { userid } = req.body;
+    var query = "call user_bookmark(?)";
+    connection.query(query,
+        [userid],
+        function (error, results, fields) {
+            if (error) throw error;
+            console.log(results);
+            res.json(results);
+        });
+})
+//check bookmark
+router.post('/check_bookmark', (req, res) => {
+    var { userid, postid } = req.body;
+    var query = "call check_bookmark(?,?)";
+    connection.query(query,
+        [userid, postid],
+        function (error, results, fields) {
+            if(error) throw error;
+            res.json(results);
+        });
+})
 module.exports = router;
