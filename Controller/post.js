@@ -57,8 +57,8 @@ router.post('/upload', (req, res) => {
         });
 })
 //xem mot bai viet -  store them truong img va tu dong update luot view
-router.post('/load_post', (req, res) => {
-    var id = req.body.id;
+router.get('/load_post/:id', (req, res) => {
+    var id = req.params.id;
     console.log(id);
     var query = 'call load_post(?)';
     connection.query(query,
