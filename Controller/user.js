@@ -162,4 +162,19 @@ router.post('/check_bookmark', (req, res) => {
             res.json(results);
         });
 })
+//subcrible 
+router.post('/subcribe',(req,res)=>{
+    var query='call subcriptions_insert(?,?,?)';
+    var endpoint=req.body.endpoint;
+    var auth=req.body.keys.auth;
+    var p256dh=req.body.keys.p256dh;
+    console.log(endpoint);
+    console.log(auth);
+    console.log(p256dh);
+    connection.query(query,
+        [endpoint,auth,p256dh], function (error, results, fields) {
+        if (error) throw error;
+        res.json({"ok":"ok"});
+    });
+})
 module.exports = router;

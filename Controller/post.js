@@ -4,12 +4,15 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var mysql = require('mysql');
+var webpush=require('web-push');
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '12345',
     database: 'mydb'
 });
+var privtekey='XWxhQB2QeUrr8nG7JAc7RsXSpQnCr_ZJwtC-jWzsv9k';
+var publickey='BNtWjGoBy3mQQg42-WIrcoBRcqLrwbyOTYWGSKKFYXTawq31EXFjZlBYDCqrapwmfLdJka3wNiXJKVhkx8A_zD0';
 //load tat ca bai viet trong category
 router.post('/load_category', (req, res) => {
     var id = req.body.id;
@@ -48,13 +51,37 @@ router.post('/upload', (req, res) => {
     var user = req.body.user;
     var state = req.body.state;
     var img = req.body.img;
-    var query = 'call post_insert(?,?,?,?,?,?,?,?)';
-    connection.query(query,
+    var query1 = 'call post_insert(?,?,?,?,?,?,?,?)';
+    connection.query(query1,
         [title, des, content, view, category, user, state, img],
         function (error, results, fields) {
             if (error) throw error;
-            res.send("insert sucessful");
         });
+    var query2='select * from subcriptions';
+    webpush.setVapidDetails(
+    'mailto:example@yourdomain.org',
+    publickey,
+    privtekey
+  );
+    connection.query(query2,
+    [], function (error, results, fields) {
+    if (error) throw error;
+    Object.keys(results).forEach(function(key) {
+      var row = results[key];
+      var pushConfig={
+          "endpoint":row.endpoint,
+          "keys":{
+            "auth":row.auth,
+            "p256dh":row.p256dh
+          }
+      };
+      webpush.sendNotification(pushConfig,JSON.stringify({title:'New Post', content:'New post added',openurl:'/'}))
+      .catch(err=>{
+        console.log(err);
+      })
+    });
+    res.json({"ok":"ok"});
+  });
 })
 //xem mot bai viet -  store them truong img va tu dong update luot view
 router.get('/load_post/:id', (req, res) => {
