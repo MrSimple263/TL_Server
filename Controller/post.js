@@ -75,10 +75,15 @@ router.post('/upload', (req, res) => {
             "p256dh":row.p256dh
           }
       };
-      webpush.sendNotification(pushConfig,JSON.stringify({title:'New Post', content:'New post added',openurl:'/'}))
-      .catch(err=>{
-        console.log(err);
-      })
+      connection.query('select max(id) as id from post',
+        [],
+        function (error, results, fields) {
+            if (error) throw error;
+            webpush.sendNotification(pushConfig,JSON.stringify({title:'New Post', content:'New post added',openurl:'/post/'+results[0].id}))
+            .catch(err=>{
+                console.log(err);
+             })
+        });
     });
     res.json({"ok":"ok"});
   });
